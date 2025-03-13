@@ -51,8 +51,8 @@ for root, dirs, files in os.walk(path, topdown=False):
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         cv2.imshow(window_original, img)
         fret, thresh1 = cv2.threshold(img_gray, low_H, 255, cv2.THRESH_BINARY_INV)
-        (totalLabels, label_ids, values, centroid) = cv2.connectedComponentsWithStats(thresh1, 4, cv2.CV_32S)
-
+        thresh1_inv = 255 - thresh1
+        (totalLabels, label_ids, values, centroid) = cv2.connectedComponentsWithStats(thresh1_inv, 4, cv2.CV_32S)
         output = np.zeros(img_gray.shape, dtype="uint8")
         # Bucle para cada objeto 'i'
         for i in range(1, totalLabels):
