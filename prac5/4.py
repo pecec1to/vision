@@ -15,10 +15,12 @@ import random as rng
 
 window_original = 'Original_image'
 window_threshold = 'Thresholded_image'
-window_labels = 'Lables image'
+window_roi = 'ROI image'
+window_roi_color = 'ROI color image'
 cv2.namedWindow(window_original, cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
 cv2.namedWindow(window_threshold, cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
-cv2.namedWindow(window_labels, cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
+cv2.namedWindow(window_roi, cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
+cv2.namedWindow(window_roi_color, cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
 
 low_H = 155
 
@@ -51,8 +53,8 @@ for root, dirs, files in os.walk(path, topdown=False):
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         cv2.imshow(window_original, img)
         fret, thresh1 = cv2.threshold(img_gray, low_H, 255, cv2.THRESH_BINARY_INV)
-        thresh1_inv = 255 - thresh1
-        (totalLabels, label_ids, values, centroid) = cv2.connectedComponentsWithStats(thresh1_inv, 4, cv2.CV_32S)
+        (totalLabels, label_ids, values, centroid) = cv2.connectedComponentsWithStats(thresh1, 4, cv2.CV_32S)
+
         output = np.zeros(img_gray.shape, dtype="uint8")
         # Bucle para cada objeto 'i'
         for i in range(1, totalLabels):
@@ -63,26 +65,23 @@ for root, dirs, files in os.walk(path, topdown=False):
                 componentMask = (label_ids == i).astype("uint8") * 255
                 output = cv2.bitwise_or(output, componentMask)
                 print(area)
-            # A completar: Contornos del objeto ‘i’ con área mayor que el mínimo indicado
+                # A completar: Contornos del objeto ‘i’ con área mayor que el mínimo indicado
                 contours, jerarquia = cv2.findContours(output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            # Bounding bóx del óbjetó ‘i’
+                # Bounding box del objeto ‘i’
                 x1 = values[i, cv2.CC_STAT_LEFT]
                 y1 = values[i, cv2.CC_STAT_TOP]
                 w = values[i, cv2.CC_STAT_WIDTH]
                 h = values[i, cv2.CC_STAT_HEIGHT]
                 roi = img_gray[int(y1):int(y1 + h), int(x1):int(x1 + w)].copy()  # ROI de la imagen de gris del objeto
                 rows, cols = roi.shape[:2]
-            # A completar: extraer el boundig box de la variable values
 
-            # Recortar la imagen de gris por el boundign box
+                roi_color = img[int(y1):int(y1 + h), int(x1):int(x1 + w)].copy()
 
-            # Recortar la imagen original de color por el boundign box
+                # Crear y apuntar los datos de la carta
 
-            # Crear y apuntar los datos de la carta
-
-            # Añadir la carta a la lista de cartas
-            #    Cards.append(c)
-            #    icard+=1
+                # Añadir la carta a la lista de cartas
+                #    Cards.append(c)
+                #    icard+=1
 
         print('\n')
         key = -1
@@ -90,8 +89,10 @@ for root, dirs, files in os.walk(path, topdown=False):
             key = cv2.pollKey()
             # Aquí va la función  cv2.inRange(....)
             cv2.imshow(window_original, img)  # , cmap='gray')
-            cv2.imshow(window_labels, label2rgb(label_ids))
+            cv2.imshow(window_roi, roi)
+            cv2.imshow(window_roi_color, roi_color)
             cv2.imshow(window_threshold, output)  # , cmap='gray')
+
         if key == ord('q') or key == 27:  # 'q' o ESC para acabar
             break
 
