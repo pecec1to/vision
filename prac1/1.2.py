@@ -20,7 +20,3 @@ ax[0].imshow(img)
 ax[1].imshow(img_paleta)
 
 plt.show()
-
-
-
-

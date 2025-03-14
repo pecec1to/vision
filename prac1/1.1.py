@@ -3,5 +3,5 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 img=Image.open("galaxia.png")
-
-img.show()
+plt.imshow(img)
+plt.show()

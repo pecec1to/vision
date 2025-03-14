@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
 
-img = Image.open("A122.tif")
+img = Image.open("greens.jpg")
 
 paleta=img.getpalette()
 
