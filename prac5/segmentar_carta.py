@@ -1,4 +1,4 @@
-# segmentat_imagen.py
+# segmentar_carta.py
 #
 # Programa pasa realizar operaciones de umbrallización global con imágenes de niveles de gris y extracción de las cartas
 # de la imagen
